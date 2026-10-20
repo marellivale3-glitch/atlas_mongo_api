@@ -1,0 +1,258 @@
+{
+  "info": {
+    "_postman_id": "34041d33-afcc-4d45-8289-4f52c7e4b699",
+    "name": "Homework 25.1 - MongoDB",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "55438275",
+    "_collection_link": "https://go.postman.co/collection/55438275-34041d33-afcc-4d45-8289-4f52c7e4b699?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "GET All Movies.",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/movies",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "movies"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET Movie by ID.",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const movie = pm.response.json();\r\n\r\npm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Movie has required fields\", function () {\r\n    pm.expect(movie).to.have.property(\"_id\");\r\n    pm.expect(movie).to.have.property(\"title\");\r\n    pm.expect(movie).to.have.property(\"year\");\r\n});\r\n\r\npm.test(\"Movie fields have correct types\", function () {\r\n    pm.expect(movie.title).to.be.a(\"string\");\r\n    pm.expect(movie.year).to.be.a(\"number\");\r\n    pm.expect(movie.genres).to.be.an(\"array\");\r\n});\r\n\r\nconst data = pm.response.json();\r\n\r\npm.test(\"IMDB is a nested object\", function () {\r\n    pm.expect(data.imdb).to.be.an(\"object\");\r\n});\r\n\r\npm.test(\"Genres is an array\", function () {\r\n    pm.expect(data.genres).to.be.an(\"array\");\r\n});\r\n\r\npm.test(\"Movie title is a string\", function () {\r\n    pm.expect(data.title).to.be.a(\"string\");\r\n});\r\n\r\npm.test(\"Movie year is a number\", function () {\r\n    pm.expect(data.year).to.be.a(\"number\");\r\n});\r\n\r\npm.test(\"Release date has valid format\", function () {\r\n    if (data.released) {\r\n        pm.expect(new Date(data.released).getTime()).not.to.be.NaN;\r\n    }\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/movies/573a1390f29313caabcd42e8",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "movies",
+            "573a1390f29313caabcd42e8"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST Create a New Movie",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const response = pm.response.json();\r\n\r\npm.test(\"POST status is successful\", function () {\r\n    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r\n});\r\n\r\npm.test(\"Response is valid JSON\", function () {\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"Movie was created with an ID\", function () {\r\n    pm.expect(response._id || response.insertedId).to.exist;\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"title\": \"The Secret of Synevyr\",\r\n  \"year\": 2023,\r\n  \"genres\": [\"Adventure\", \"Mystery\"],\r\n  \"runtime\": 105,\r\n  \"directors\": [\"Ivan Petrenko\"],\r\n  \"cast\": [\"Dasha Taran\", \"Taras Tsymbaliuk\"],\r\n  \"plot\": \"A group of students stumbles upon ancient legends while hiking in the Carpathians, leading them to uncover a hidden truth beneath Lake Synevyr.\",\r\n  \"languages\": [\"Ukrainian\", \"Polish\"],\r\n  \"released\": \"2023-09-18T00:00:00Z\",\r\n  \"imdb\": {\r\n    \"rating\": 7.4,\r\n    \"votes\": 2345,\r\n    \"id\": \"tt7654321\"\r\n  },\r\n  \"tomatoes\": {\r\n    \"viewer\": {\r\n      \"rating\": 4.2,\r\n      \"numReviews\": 178\r\n    }\r\n  },\r\n  \"fullplot\": \"During a summer hike, five Ukrainian students become entangled in a centuries-old mystery connected to local folklore. What starts as a fun trip soon turns into a thrilling journey of discovery, courage, and ancient magic.\",\r\n  \"countries\": [\"Ukraine\"],\r\n  \"type\": \"movie\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/movies",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "movies"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PUT Update Movie",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const movie = pm.response.json();\r\n\r\npm.test(\"PUT status is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Movie title updated\", function () {\r\n    pm.expect(movie.title).to.eql(\"The Secret of Synevyr - Updated\");\r\n});\r\n\r\npm.test(\"Year and runtime updated\", function () {\r\n    pm.expect(movie.year).to.eql(2024);\r\n    pm.expect(movie.runtime).to.eql(120);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"title\": \"The Secret of Synevyr - Updated\",\r\n  \"year\": 2024,\r\n  \"runtime\": 120\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/movies/6ad73667907355421320fb35",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "movies",
+            "6ad73667907355421320fb35"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET Verify Updated Movie",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/movies/6ad73338907355421320fb34",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "movies",
+            "6ad73338907355421320fb34"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DELETE Movie",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const response = pm.response.json();\r\n\r\npm.test(\"DELETE status is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Movie deleted successfully\", function () {\r\n    pm.expect(response.message).to.eql(\"Документ видалено\");\r\n});\r\n\r\npm.test(\"Deleted movie ID matches request\", function () {\r\n    const movieId = pm.request.url.path.slice(-1)[0];\r\n    pm.expect(response.deletedDocument._id).to.eql(movieId);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/movies/6ad73667907355421320fb35",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "movies",
+            "6ad73667907355421320fb35"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET Verify Movie Was Deleted",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/movies/6ad73667907355421320fb35",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "movies",
+            "6ad73667907355421320fb35"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST Test Null & Special Characters",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"title\": \"Тест: Київ, Café & 🎬\",\r\n  \"year\": null,\r\n  \"genres\": [],\r\n  \"plot\": \"\",\r\n  \"directors\": null,\r\n  \"type\": \"movie\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/movies",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "movies"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "New Request",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": ""
+        }
+      },
+      "response": []
+    }
+  ]
+}
